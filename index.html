@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="ro">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Rebus Nespresso</title>
+  <meta name="description"
+    content="Rebus interactiv despre Nespresso Vertuo. Completează cuvintele-cheie din prezentare.">
+  <meta name="theme-color" content="#3a1c11">
+  <link rel="icon"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%233a1c11'/%3E%3Cg transform='rotate(35 32 32)'%3E%3Cellipse cx='32' cy='32' rx='18' ry='12' fill='%23f5d77a'/%3E%3Cpath d='M15 32q8-7 17 0t17 0' fill='none' stroke='%233a1c11' stroke-width='3' stroke-linecap='round'/%3E%3C/g%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --espresso: #3a1c11;
+      --roast: #52281a;
+      --mocha: #7a4a32;
+      --latte: #d9bf9c;
+      --foam: #efe3cc;
+      --ivory: #fbf6ea;
+      --butter: #f5d77a;
+      --butter-soft: #fff1c2;
+      --gold: #d6a935;
+      --ink: #2e170e;
+      --error: #a23b2a;
+      --beans: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='170' height='170'%3E%3Cg fill='%23502717'%3E%3Cg transform='rotate(35 40 40)'%3E%3Cellipse cx='40' cy='40' rx='20' ry='13'/%3E%3Cpath d='M22 40q9-7 18 0t18 0' fill='none' stroke='%233a1c11' stroke-width='2.5' stroke-linecap='round'/%3E%3C/g%3E%3Cg transform='rotate(-25 120 110)'%3E%3Cellipse cx='120' cy='110' rx='20' ry='13'/%3E%3Cpath d='M102 110q9-7 18 0t18 0' fill='none' stroke='%233a1c11' stroke-width='2.5' stroke-linecap='round'/%3E%3C/g%3E%3Cg transform='rotate(70 130 28)'%3E%3Cellipse cx='130' cy='28' rx='15' ry='10'/%3E%3C/g%3E%3Cg transform='rotate(-55 34 135)'%3E%3Cellipse cx='34' cy='135' rx='15' ry='10'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      --paper: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .2 0 0 0 0 .1 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    html {
+      -webkit-text-size-adjust: 100%
+    }
+
+    body {
+      margin: 0;
+      font-family: Poppins, system-ui, sans-serif;
+      color: var(--ink);
+      background: var(--ivory) var(--paper);
+      line-height: 1.55
+    }
+
+    .ic {
+      width: 1.15em;
+      height: 1.15em;
+      flex: none
+    }
+
+    button {
+      font: inherit;
+      cursor: pointer
+    }
+
+    :focus-visible {
+      outline: 3px solid var(--espresso);
+      outline-offset: 2px
+    }
+
+    /* hero */
+    .hero {
+      position: relative;
+      background: var(--espresso) var(--beans);
+      color: var(--ivory);
+      text-align: center;
+      padding: 44px 20px 110px
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1.5px solid var(--butter);
+      color: var(--butter);
+      border-radius: 999px;
+      padding: 6px 16px;
+      font-weight: 600;
+      font-size: .9rem
+    }
+
+    .hero h1 {
+      margin: 22px 0 10px;
+      font-size: clamp(2.2rem, 8vw, 4.2rem);
+      font-weight: 800;
+      line-height: 1.05;
+      text-transform: uppercase
+    }
+
+    .hero p {
+      margin: 0 auto;
+      max-width: 34rem;
+      color: #ecdcc3
+    }
+
+    .wave {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -1px;
+      width: 100%;
+      height: 70px;
+      display: block
+    }
+
+    /* layout */
+    .wrap {
+      max-width: 1080px;
+      margin: -30px auto 0;
+      padding: 0 16px 56px;
+      position: relative
+    }
+
+    .game {
+      display: grid;
+      gap: 28px
+    }
+
+    @media(min-width:960px) {
+      .game {
+        grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+        align-items: start
+      }
+    }
+
+    h2 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin: 0 0 12px
+    }
+
+    /* key word progress */
+    .keyword {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 16px
+    }
+
+    .keyword h2 {
+      margin: 0
+    }
+
+    .slots {
+      display: flex;
+      gap: 6px;
+      list-style: none;
+      margin: 0;
+      padding: 0
+    }
+
+    .slot {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      border: 1.5px dashed var(--mocha);
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      color: var(--espresso);
+      background: transparent
+    }
+
+    .slot.on {
+      border-style: solid;
+      border-color: var(--gold);
+      background: var(--butter)
+    }
+
+    .done .slot {
+      animation: pop .5s both;
+      animation-delay: calc(var(--i)*90ms)
+    }
+
+    @keyframes pop {
+      0% {
+        transform: translateY(0)
+      }
+
+      40% {
+        transform: translateY(-10px)
+      }
+
+      100% {
+        transform: translateY(0)
+      }
+    }
+
+    /* active clue */
+    .cluebar {
+      background: var(--espresso);
+      color: var(--ivory);
+      border-radius: 20px;
+      padding: 14px 18px;
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      margin-bottom: 14px;
+      min-height: 78px
+    }
+
+    .badge {
+      flex: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--butter);
+      color: var(--espresso);
+      display: grid;
+      place-items: center;
+      font-weight: 800
+    }
+
+    .cluebar p {
+      margin: 0;
+      font-size: .95rem
+    }
+
+    .cluebar small {
+      display: block;
+      color: var(--latte)
+    }
+
+    /* puzzle */
+    .puzzle {
+      background: #fffdf7;
+      border: 1.5px solid var(--latte);
+      border-radius: 24px;
+      padding: 14px 12px 16px;
+      max-width: 640px
+    }
+
+    .row,
+    .colhead {
+      display: grid;
+      grid-template-columns: 26px repeat(10, minmax(0, 1fr));
+      gap: 5px;
+      align-items: center
+    }
+
+    .row {
+      margin-top: 6px
+    }
+
+    .colhead {
+      color: var(--gold);
+      height: 22px
+    }
+
+    .colhead .ic {
+      grid-column: 2;
+      justify-self: center
+    }
+
+    .num {
+      text-align: center;
+      font-weight: 600;
+      font-size: .8rem;
+      color: var(--mocha)
+    }
+
+    .row.active .num {
+      color: var(--espresso);
+      font-weight: 800
+    }
+
+    .cell {
+      width: 100%;
+      aspect-ratio: 1;
+      min-width: 0;
+      padding: 0;
+      text-align: center;
+      font: 700 clamp(14px, 4.4vw, 24px)/1 Poppins, sans-serif;
+      text-transform: uppercase;
+      color: var(--ink);
+      background: #fff;
+      border: 1.5px solid var(--latte);
+      border-radius: 8px;
+      caret-color: transparent
+    }
+
+    .cell.key {
+      background: var(--butter-soft);
+      border-color: #e3bd55
+    }
+
+    .row.active .cell {
+      background: #fff8dc
+    }
+
+    .row.active .cell.key {
+      background: var(--butter)
+    }
+
+    .cell.solved {
+      background: var(--foam);
+      border-color: var(--mocha);
+      color: var(--espresso)
+    }
+
+    .cell.key.solved {
+      background: var(--butter);
+      border-color: var(--gold)
+    }
+
+    .cell.hinted {
+      color: var(--mocha)
+    }
+
+    .row.wrong .cell {
+      border-color: var(--error);
+      animation: shake .35s
+    }
+
+    @keyframes shake {
+      25% {
+        transform: translateX(-4px)
+      }
+
+      75% {
+        transform: translateX(4px)
+      }
+    }
+
+    .tools {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 16px
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 44px;
+      padding: 0 20px;
+      border-radius: 999px;
+      font-weight: 600;
+      border: 1.5px solid var(--espresso);
+      background: transparent;
+      color: var(--espresso)
+    }
+
+    .btn.primary {
+      background: var(--espresso);
+      color: var(--ivory)
+    }
+
+    .btn:hover {
+      background: var(--butter);
+      color: var(--espresso)
+    }
+
+    #status {
+      min-height: 1.6em;
+      margin: 12px 4px 0;
+      color: var(--mocha);
+      font-size: .9rem
+    }
+
+    /* clue list */
+    .clues ol {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 8px
+    }
+
+    .clue {
+      width: 100%;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      text-align: left;
+      background: #fffdf7;
+      border: 1.5px solid var(--latte);
+      border-radius: 16px;
+      padding: 12px 14px;
+      color: var(--ink)
+    }
+
+    .clue .n {
+      flex: none;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--foam);
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      font-size: .85rem
+    }
+
+    .clue .t {
+      flex: 1;
+      font-size: .92rem
+    }
+
+    .clue .ic {
+      display: none;
+      color: var(--mocha)
+    }
+
+    .clue[aria-current="true"] {
+      background: var(--butter-soft);
+      border-color: var(--gold)
+    }
+
+    .clue.solved {
+      color: var(--mocha)
+    }
+
+    .clue.solved .ic {
+      display: block
+    }
+
+    .clue.solved .n {
+      background: var(--butter)
+    }
+
+    /* win */
+    .win {
+      margin-top: 32px;
+      background: var(--espresso) var(--beans);
+      color: var(--ivory);
+      border-radius: 28px;
+      padding: 36px 20px;
+      text-align: center
+    }
+
+    .win[hidden] {
+      display: none
+    }
+
+    .win h2 {
+      font-size: clamp(2.4rem, 10vw, 4.5rem);
+      font-weight: 800;
+      letter-spacing: .08em;
+      color: var(--butter);
+      margin: 8px 0
+    }
+
+    .win p {
+      margin: 0 auto;
+      max-width: 30rem
+    }
+
+    footer {
+      text-align: center;
+      color: var(--mocha);
+      font-size: .85rem;
+      padding: 0 16px 32px
+    }
+
+    @media(prefers-reduced-motion:reduce) {
+      * {
+        animation: none !important;
+        transition: none !important
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="hero">
+    <span class="brand"><i data-lucide="coffee" class="ic"></i>Nespresso Vertuo</span>
+    <h1>Rebus Vertuo</h1>
+    <p>Completează cuvintele-cheie din prezentare. Prima literă a fiecărui răspuns formează cuvântul-cheie.</p>
+    <svg class="wave" viewBox="0 0 1440 70" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 30C240 70 480 0 760 28s460 40 680 6V70H0z" fill="#e4cba5" />
+      <path d="M0 48C260 12 520 66 800 42s420-30 640 0V70H0z" fill="#fbf6ea" />
+    </svg>
+  </header>
+
+  <main class="wrap">
+    <noscript>Rebusul are nevoie de JavaScript ca să funcționeze.</noscript>
+    <div class="game">
+      <section class="board" aria-label="Rebus">
+        <div class="keyword" id="keyword">
+          <h2>Cuvântul-cheie</h2>
+          <ol class="slots" id="slots" aria-label="Litere descoperite"></ol>
+        </div>
+        <div class="cluebar" aria-live="polite">
+          <span class="badge" id="cbNum">1</span>
+          <p><span id="cbText"></span><small id="cbLen"></small></p>
+        </div>
+        <div class="puzzle">
+          <div class="colhead" aria-hidden="true"><i data-lucide="key-round" class="ic"></i></div>
+          <div id="grid"></div>
+        </div>
+        <p id="status" role="status" aria-live="polite"></p>
+        <div class="tools">
+          <button class="btn primary" id="hintBtn" type="button"><i data-lucide="lightbulb"
+              class="ic"></i>Indiciu</button>
+          <button class="btn" id="resetBtn" type="button"><i data-lucide="rotate-ccw" class="ic"></i>Resetează</button>
+        </div>
+      </section>
+
+      <aside class="clues">
+        <h2>Indicii</h2>
+        <ol id="clueList"></ol>
+      </aside>
+    </div>
+
+    <section class="win" id="win" hidden>
+      <i data-lucide="party-popper" class="ic" style="width:40px;height:40px;color:#f5d77a"></i>
+      <h2 id="winWord"></h2>
+      <p>Rebus rezolvat. Cuvintele-cheie din prezentare formează numele gamei Nespresso despre care am vorbit.</p>
+    </section>
+  </main>
+  <footer>Mulțumim pentru completare</footer>
+
+  <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+  <script>
+    (() => {
+      const WORDS = [
+        { clue: "Ce caracteristică a gamei permite alegerea unor sortimente diferite?", answer: "VARIETATE" },
+        { clue: "Ce oferă Nespresso Vertuo dincolo de o cafea rapidă?", answer: "EXPERIENȚĂ" },
+        { clue: "Cum poate fi descris momentul cafelei, atunci când devine un obicei zilnic?", answer: "RUTINĂ" },
+        { clue: "Ce resursă vor consumatorii să economisească prin prepararea rapidă?", answer: "TIMP" },
+        { clue: "Ce calitate a preparării face cafeaua simplu de obținut?", answer: "UȘURINȚĂ" },
+        { clue: "Cum se numește comportamentul repetat de consum al cafelei?", answer: "OBICEI" }
+      ];
+      // ignoră diacriticele (inclusiv ș/ş și ț/ţ), ca să meargă și de pe telefon
+      const norm = s => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase();
+      const rows = WORDS.map(w => ({ ...w, chars: [...w.answer], n: [...w.answer].map(norm) }));
+      const st = rows.map(r => ({ letters: r.chars.map(() => ''), solved: false }));
+      const $ = id => document.getElementById(id);
+      const grid = $('grid'), status = $('status');
+      const rowEls = [], cells = [], clueEls = [], slotEls = [];
+      let active = 0;
+
+      const icons = () => window.lucide && lucide.createIcons();
+      const say = t => status.textContent = t;
+
+      // construire
+      rows.forEach((r, ri) => {
+        const row = document.createElement('div');
+        row.className = 'row';
+        row.innerHTML = `<span class="num">${ri + 1}</span>`;
+        cells[ri] = r.chars.map((_, ci) => {
+          const c = document.createElement('input');
+          c.className = 'cell' + (ci === 0 ? ' key' : '');
+          c.type = 'text'; c.maxLength = 2; c.autocomplete = 'off';
+          c.setAttribute('autocapitalize', 'characters');
+          c.setAttribute('autocorrect', 'off'); c.spellcheck = false;
+          c.setAttribute('aria-label', `Cuvântul ${ri + 1}, litera ${ci + 1} din ${r.chars.length}`);
+          c.addEventListener('focus', () => { setActive(ri); c.select(); });
+          c.addEventListener('click', () => c.select());
+          c.addEventListener('input', () => onInput(ri, ci));
+          c.addEventListener('keydown', e => onKey(e, ri, ci));
+          row.appendChild(c);
+          return c;
+        });
+        rowEls[ri] = row;
+        grid.appendChild(row);
+
+        const li = document.createElement('li');
+        li.innerHTML = `<button type="button" class="clue"><span class="n">${ri + 1}</span><span class="t">${r.clue}</span><i data-lucide="check" class="ic"></i></button>`;
+        li.firstChild.addEventListener('click', () => focusRow(ri));
+        clueEls[ri] = li.firstChild;
+        $('clueList').appendChild(li);
+
+        const s = document.createElement('li');
+        s.className = 'slot'; s.style.setProperty('--i', ri);
+        s.setAttribute('aria-label', 'Literă încă nedescoperită');
+        slotEls[ri] = s;
+        $('slots').appendChild(s);
+      });
+
+      function setActive(r) {
+        active = r;
+        rowEls.forEach((el, i) => el.classList.toggle('active', i === r));
+        clueEls.forEach((el, i) => el.setAttribute('aria-current', i === r));
+        $('cbNum').textContent = r + 1;
+        $('cbText').textContent = rows[r].clue;
+        $('cbLen').textContent = `${rows[r].chars.length} litere`;
+      }
+
+      function focusCell(r, c) {
+        const el = cells[r][Math.max(0, Math.min(c, cells[r].length - 1))];
+        el.focus();
+      }
+      function focusRow(r) {
+        const c = st[r].letters.findIndex(l => !l);
+        focusCell(r, c < 0 ? 0 : c);
+      }
+
+      function setLetter(r, c, ch) {
+        st[r].letters[c] = ch;
+        cells[r][c].value = ch;
+        rowEls[r].classList.remove('wrong');
+      }
+
+      function onInput(r, c) {
+        if (st[r].solved) return;
+        const raw = cells[r][c].value;
+        if (!raw) { setLetter(r, c, ''); return; }
+        const ch = [...raw].reverse().find(x => /\p{L}/u.test(x));
+        if (!ch) { cells[r][c].value = st[r].letters[c]; return; }
+        setLetter(r, c, ch.toLocaleUpperCase('ro'));
+        if (st[r].letters.every(Boolean)) checkRow(r);
+        else if (c < cells[r].length - 1) focusCell(r, c + 1);
+      }
+
+      function onKey(e, r, c) {
+        const k = e.key;
+        if (k === 'Backspace' && !st[r].solved) {
+          e.preventDefault();
+          if (st[r].letters[c]) setLetter(r, c, '');
+          else if (c > 0) { focusCell(r, c - 1); setLetter(r, c - 1, ''); }
+        } else if (k === 'ArrowLeft') { e.preventDefault(); focusCell(r, c - 1); }
+        else if (k === 'ArrowRight') { e.preventDefault(); focusCell(r, c + 1); }
+        else if (k === 'ArrowUp' && r > 0) { e.preventDefault(); focusCell(r - 1, c); }
+        else if (k === 'ArrowDown' && r < rows.length - 1) { e.preventDefault(); focusCell(r + 1, c); }
+        else if (k === 'Enter') { e.preventDefault(); focusRow((r + 1) % rows.length); }
+      }
+
+      function checkRow(r) {
+        const ok = st[r].letters.every((l, i) => norm(l) === rows[r].n[i]);
+        if (!ok) {
+          rowEls[r].classList.remove('wrong'); void rowEls[r].offsetWidth;
+          rowEls[r].classList.add('wrong');
+          say(`Cuvântul ${r + 1} nu este corect încă. Mai încearcă.`);
+          return;
+        }
+        st[r].solved = true;
+        st[r].letters = [...rows[r].chars];
+        cells[r].forEach((el, i) => { el.value = rows[r].chars[i]; el.readOnly = true; el.classList.add('solved'); });
+        clueEls[r].classList.add('solved');
+        slotEls[r].textContent = rows[r].chars[0];
+        slotEls[r].classList.add('on');
+        slotEls[r].setAttribute('aria-label', `Litera ${rows[r].chars[0]}`);
+        const left = st.findIndex(s => !s.solved);
+        if (left < 0) return win();
+        say(`Corect! Cuvântul ${r + 1} este ${rows[r].answer}.`);
+        focusRow(left);
+      }
+
+      function win() {
+        $('keyword').classList.add('done');
+        $('winWord').textContent = rows.map(r => r.chars[0]).join('');
+        $('win').hidden = false;
+        say('Rebus rezolvat.');
+        const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+        $('win').scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'center' });
+      }
+
+      $('hintBtn').addEventListener('click', () => {
+        const r = st[active].solved ? st.findIndex(s => !s.solved) : active;
+        if (r < 0) return;
+        const c = st[r].letters.findIndex((l, i) => norm(l) !== rows[r].n[i]);
+        setLetter(r, c, rows[r].chars[c]);
+        cells[r][c].classList.add('hinted');
+        say(`Indiciu: litera ${c + 1} din cuvântul ${r + 1} este ${rows[r].chars[c]}.`);
+        if (st[r].letters.every(Boolean)) checkRow(r); else focusCell(r, c + 1);
+      });
+
+      $('resetBtn').addEventListener('click', () => {
+        st.forEach((s, r) => {
+          s.solved = false; s.letters = rows[r].chars.map(() => '');
+          rowEls[r].classList.remove('wrong');
+          cells[r].forEach(el => { el.value = ''; el.readOnly = false; el.classList.remove('solved', 'hinted'); });
+          clueEls[r].classList.remove('solved');
+          slotEls[r].textContent = ''; slotEls[r].classList.remove('on');
+        });
+        $('keyword').classList.remove('done');
+        $('win').hidden = true;
+        say('Rebus resetat.');
+        focusCell(0, 0);
+      });
+
+      setActive(0);
+      icons();
+    })();
+  </script>
+</body>
+
+</html>
